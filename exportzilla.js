@@ -171,18 +171,23 @@
 })();
   // Hide the selected-regions, selected-regions-me, selected-regions-africa, selected-regions-europe, selected-regions-caribbean, and selected-regions-central-america divs at the start
   document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('selected-regions');
-    if (container) container.style.display = 'none';
-    const meContainer = document.getElementById('selected-regions-me');
-    if (meContainer) meContainer.style.display = 'none';
-    const africaContainer = document.getElementById('selected-regions-africa');
-    if (africaContainer) africaContainer.style.display = 'none';
-    const europeContainer = document.getElementById('selected-regions-europe');
-    if (europeContainer) europeContainer.style.display = 'none';
-    const caribbeanContainer = document.getElementById('selected-regions-caribbean');
-    if (caribbeanContainer) caribbeanContainer.style.display = 'none';
-    const centralAmericaContainer = document.getElementById('selected-regions-central-america');
-    if (centralAmericaContainer) centralAmericaContainer.style.display = 'none';
+    // Hide all region tags/containers at the start
+    const regionContainers = [
+      'selected-regions',
+      'selected-regions-asia',
+      'selected-regions-me',
+      'selected-regions-africa',
+      'selected-regions-europe',
+      'selected-regions-caribbean',
+      'selected-regions-central-america',
+      'selected-regions-north-america',
+      'selected-regions-south-america',
+      'selected-regions-oceania'
+    ];
+    regionContainers.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
   });
   // Asia countries
   const countryIds = [
