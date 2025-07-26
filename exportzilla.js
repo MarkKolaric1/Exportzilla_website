@@ -514,28 +514,18 @@
         const cb = document.getElementById(cid);
         return cb && cb.checked;
       }).length;
-      // Use new IDs for Asia tags and container
-      let mainTag = document.getElementById('main-tag-asia');
-      let subTag = document.getElementById('sub-tag-asia');
-      let container = document.getElementById('selected-regions-asia');
-      // Fallback to legacy IDs if not found
-      if (!mainTag) mainTag = document.getElementById('main-tag');
-      if (!subTag) subTag = document.getElementById('sub-tag');
-      if (!container) container = document.getElementById('selected-regions');
-      if (!mainTag || !subTag || !container) {
-        // [DEBUG] main-tag-asia, sub-tag-asia, or selected-regions-asia container not found
-        return;
-      }
+      const mainTag = document.getElementById('main-tag-asia');
+      const subTag = document.getElementById('sub-tag-asia');
+      const container = document.getElementById('selected-regions-asia');
+      if (!mainTag || !subTag || !container) return;
       if (count > 0) {
         mainTag.textContent = 'Asia';
         subTag.textContent = count;
         container.style.display = 'flex';
-        // [DEBUG] main-tag-asia set to Asia, sub-tag-asia set to ...
       } else {
         mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
-        // [DEBUG] main-tag-asia and sub-tag-asia cleared and selected-regions-asia hidden
       }
       updateRegionsTotal();
     }
