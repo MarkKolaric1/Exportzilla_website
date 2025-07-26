@@ -173,7 +173,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     // Hide all region tags/containers at the start
     const regionContainers = [
-      'selected-regions',
       'selected-regions-asia',
       'selected-regions-me',
       'selected-regions-africa',
@@ -705,8 +704,7 @@
 
     function updateRegionsTotal() {
       let total = 0;
-      // Use new Asia container if present, else fallback
-      const asiaContainer = document.getElementById('selected-regions-asia') || document.getElementById('selected-regions');
+      const asiaContainer = document.getElementById('selected-regions-asia');
       const meContainer = document.getElementById('selected-regions-me');
       const africaContainer = document.getElementById('selected-regions-africa');
       const europeContainer = document.getElementById('selected-regions-europe');
