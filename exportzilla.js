@@ -213,6 +213,21 @@
     'Belize', 'Costa-Rica', 'El-Salvador', 'Guatemala', 'Honduras', 'Nicaragua', 'Panama'
   ];
 
+  // North America countries
+  const northAmericaCountryIds = [
+    'Canada', 'Mexico', 'United-States'
+  ];
+
+  // South America countries
+  const southAmericaCountryIds = [
+    'Argentina', 'Bolivia', 'Brazil', 'Chile', 'Colombia', 'Ecuador', 'Guyana', 'Paraguay', 'Peru', 'Suriname', 'Uruguay', 'Venezuela'
+  ];
+
+  // Oceania countries
+  const oceaniaCountryIds = [
+    'Australia', 'Fiji', 'Kiribati', 'Marshall-Islands', 'Micronesia-Federated-States', 'Nauru', 'New-Zealand', 'Palau', 'Papua-New-Guinea', 'Samoa', 'Solomon-Islands', 'Tonga', 'Tuvalu', 'Vanuatu'
+  ];
+
   document.addEventListener('change', event => {
     const el = event.target;
 
@@ -301,6 +316,48 @@
         if (parent && !anyChecked) parent.checked = false;
       }
     }
+    // 1g. Country checkbox toggled? (North America)
+    if (northAmericaCountryIds.includes(el.id)) {
+      updateNorthAmericaTag();
+      const parent = document.getElementById('North-America');
+      if (el.checked) {
+        if (parent) parent.checked = true;
+      } else {
+        const anyChecked = northAmericaCountryIds.some(cid => {
+          const cb = document.getElementById(cid);
+          return cb && cb.checked;
+        });
+        if (parent && !anyChecked) parent.checked = false;
+      }
+    }
+    // 1h. Country checkbox toggled? (South America)
+    if (southAmericaCountryIds.includes(el.id)) {
+      updateSouthAmericaTag();
+      const parent = document.getElementById('South-America');
+      if (el.checked) {
+        if (parent) parent.checked = true;
+      } else {
+        const anyChecked = southAmericaCountryIds.some(cid => {
+          const cb = document.getElementById(cid);
+          return cb && cb.checked;
+        });
+        if (parent && !anyChecked) parent.checked = false;
+      }
+    }
+    // 1i. Country checkbox toggled? (Oceania)
+    if (oceaniaCountryIds.includes(el.id)) {
+      updateOceaniaTag();
+      const parent = document.getElementById('Oceania');
+      if (el.checked) {
+        if (parent) parent.checked = true;
+      } else {
+        const anyChecked = oceaniaCountryIds.some(cid => {
+          const cb = document.getElementById(cid);
+          return cb && cb.checked;
+        });
+        if (parent && !anyChecked) parent.checked = false;
+      }
+    }
 
     // 2. Asia parent toggled?
     if (el.id === 'Asia') {
@@ -349,6 +406,30 @@
         if (cb) cb.checked = el.checked;
       });
       updateCentralAmericaTag();
+    }
+    // 2g. North America parent toggled?
+    if (el.id === 'North-America') {
+      northAmericaCountryIds.forEach(cid => {
+        const cb = document.getElementById(cid);
+        if (cb) cb.checked = el.checked;
+      });
+      updateNorthAmericaTag();
+    }
+    // 2h. South America parent toggled?
+    if (el.id === 'South-America') {
+      southAmericaCountryIds.forEach(cid => {
+        const cb = document.getElementById(cid);
+        if (cb) cb.checked = el.checked;
+      });
+      updateSouthAmericaTag();
+    }
+    // 2i. Oceania parent toggled?
+    if (el.id === 'Oceania') {
+      oceaniaCountryIds.forEach(cid => {
+        const cb = document.getElementById(cid);
+        if (cb) cb.checked = el.checked;
+      });
+      updateOceaniaTag();
     }
 
     // Optionally, keep the old logic for 'Asia' and countryIds for compatibility
@@ -428,23 +509,28 @@
         const cb = document.getElementById(cid);
         return cb && cb.checked;
       }).length;
-      const mainTag = document.getElementById('main-tag');
-      const subTag = document.getElementById('sub-tag');
-      const container = document.getElementById('selected-regions');
+      // Use new IDs for Asia tags and container
+      let mainTag = document.getElementById('main-tag-asia');
+      let subTag = document.getElementById('sub-tag-asia');
+      let container = document.getElementById('selected-regions-asia');
+      // Fallback to legacy IDs if not found
+      if (!mainTag) mainTag = document.getElementById('main-tag');
+      if (!subTag) subTag = document.getElementById('sub-tag');
+      if (!container) container = document.getElementById('selected-regions');
       if (!mainTag || !subTag || !container) {
-        // [DEBUG] main-tag, sub-tag, or selected-regions container not found
+        // [DEBUG] main-tag-asia, sub-tag-asia, or selected-regions-asia container not found
         return;
       }
       if (count > 0) {
         mainTag.textContent = 'Asia';
         subTag.textContent = count;
         container.style.display = 'flex';
-        // [DEBUG] main-tag set to Asia, sub-tag set to ...
+        // [DEBUG] main-tag-asia set to Asia, sub-tag-asia set to ...
       } else {
         mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
-        // [DEBUG] main-tag and sub-tag cleared and selected-regions hidden
+        // [DEBUG] main-tag-asia and sub-tag-asia cleared and selected-regions-asia hidden
       }
       updateRegionsTotal();
     }
@@ -559,20 +645,90 @@
       updateRegionsTotal();
     }
 
+    function updateNorthAmericaTag() {
+      const count = northAmericaCountryIds.filter(cid => {
+        const cb = document.getElementById(cid);
+        return cb && cb.checked;
+      }).length;
+      const mainTag = document.getElementById('main-tag-north-america');
+      const subTag = document.getElementById('sub-tag-north-america');
+      const container = document.getElementById('selected-regions-north-america');
+      if (!mainTag || !subTag || !container) return;
+      if (count > 0) {
+        mainTag.textContent = 'North America';
+        subTag.textContent = count;
+        container.style.display = 'flex';
+      } else {
+        mainTag.textContent = '';
+        subTag.textContent = '';
+        container.style.display = 'none';
+      }
+      updateRegionsTotal();
+    }
+
+    function updateSouthAmericaTag() {
+      const count = southAmericaCountryIds.filter(cid => {
+        const cb = document.getElementById(cid);
+        return cb && cb.checked;
+      }).length;
+      const mainTag = document.getElementById('main-tag-south-america');
+      const subTag = document.getElementById('sub-tag-south-america');
+      const container = document.getElementById('selected-regions-south-america');
+      if (!mainTag || !subTag || !container) return;
+      if (count > 0) {
+        mainTag.textContent = 'South America';
+        subTag.textContent = count;
+        container.style.display = 'flex';
+      } else {
+        mainTag.textContent = '';
+        subTag.textContent = '';
+        container.style.display = 'none';
+      }
+      updateRegionsTotal();
+    }
+
+    function updateOceaniaTag() {
+      const count = oceaniaCountryIds.filter(cid => {
+        const cb = document.getElementById(cid);
+        return cb && cb.checked;
+      }).length;
+      const mainTag = document.getElementById('main-tag-oceania');
+      const subTag = document.getElementById('sub-tag-oceania');
+      const container = document.getElementById('selected-regions-oceania');
+      if (!mainTag || !subTag || !container) return;
+      if (count > 0) {
+        mainTag.textContent = 'Oceania';
+        subTag.textContent = count;
+        container.style.display = 'flex';
+      } else {
+        mainTag.textContent = '';
+        subTag.textContent = '';
+        container.style.display = 'none';
+      }
+      updateRegionsTotal();
+    }
+
     function updateRegionsTotal() {
       let total = 0;
-      const asiaContainer = document.getElementById('selected-regions');
+      // Use new Asia container if present, else fallback
+      const asiaContainer = document.getElementById('selected-regions-asia') || document.getElementById('selected-regions');
       const meContainer = document.getElementById('selected-regions-me');
       const africaContainer = document.getElementById('selected-regions-africa');
       const europeContainer = document.getElementById('selected-regions-europe');
       const caribbeanContainer = document.getElementById('selected-regions-caribbean');
       const centralAmericaContainer = document.getElementById('selected-regions-central-america');
+      const northAmericaContainer = document.getElementById('selected-regions-north-america');
+      const southAmericaContainer = document.getElementById('selected-regions-south-america');
+      const oceaniaContainer = document.getElementById('selected-regions-oceania');
       if (asiaContainer && asiaContainer.style.display !== 'none') total++;
       if (meContainer && meContainer.style.display !== 'none') total++;
       if (africaContainer && africaContainer.style.display !== 'none') total++;
       if (europeContainer && europeContainer.style.display !== 'none') total++;
       if (caribbeanContainer && caribbeanContainer.style.display !== 'none') total++;
       if (centralAmericaContainer && centralAmericaContainer.style.display !== 'none') total++;
+      if (northAmericaContainer && northAmericaContainer.style.display !== 'none') total++;
+      if (southAmericaContainer && southAmericaContainer.style.display !== 'none') total++;
+      if (oceaniaContainer && oceaniaContainer.style.display !== 'none') total++;
       const regionsTotal = document.getElementById('Regions-total');
       if (regionsTotal) regionsTotal.textContent = total;
     }
