@@ -232,6 +232,54 @@
     'Australia', 'Fiji', 'Kiribati', 'Marshall-Islands', 'Micronesia', 'Nauru', 'New-Zealand', 'Palau', 'Papua-New-Guinea', 'Samoa', 'Solomon-Islands', 'Tonga', 'Tuvalu', 'Vanuatu'
   ];
 
+  // --- Price Calculation Function ---
+
+  // TEMP: Bind calculatePrice to button for testing
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('calculate-price-btn');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        const price = calculatePrice();
+        alert('Calculated price: ' + price + ' RUB');
+      });
+    }
+  });
+  function calculatePrice() {
+    // Collect all country IDs
+    const allCountryIds = [
+      ...countryIds, ...meCountryIds, ...africaCountryIds, ...europeCountryIds,
+      ...caribbeanCountryIds, ...centralAmericaCountryIds, ...northAmericaCountryIds,
+      ...southAmericaCountryIds, ...oceaniaCountryIds
+    ];
+    // Count checked countries
+    const countriesChecked = allCountryIds.filter(id => {
+      const cb = document.getElementById(id);
+      return cb && cb.checked;
+    }).length;
+    // Get slider value
+    const slider = document.getElementById('custom-range-slider');
+    const sliderValue = slider ? parseInt(slider.value, 10) : 1000;
+    // Formula: only countries and slider
+    const price = (countriesChecked * 2) * (sliderValue / 1000);
+    return Math.max(1, Math.round(price));
+  }
+
+  // Optional: Helper to get checked country/category names (for order details)
+  function getCheckedCountries() {
+    const allCountryIds = [
+      ...countryIds, ...meCountryIds, ...africaCountryIds, ...europeCountryIds,
+      ...caribbeanCountryIds, ...centralAmericaCountryIds, ...northAmericaCountryIds,
+      ...southAmericaCountryIds, ...oceaniaCountryIds
+    ];
+    return allCountryIds.filter(id => {
+      const cb = document.getElementById(id);
+      return cb && cb.checked;
+    });
+  }
+  // function getCheckedCategories() {
+  //   return Array.from(document.querySelectorAll('.category-checkbox')).filter(cb => cb.checked).map(cb => cb.value || cb.id);
+  // }
+
   document.addEventListener('change', event => {
     const el = event.target;
 
