@@ -234,15 +234,38 @@
 
   // --- Price Calculation Function ---
 
-  // TEMP: Bind calculatePrice to button for testing
+  // Live price update on checkbox and slider changes
   document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('calculate-price-btn');
-    if (btn) {
-      btn.addEventListener('click', function() {
-        const price = calculatePrice();
-        alert('Calculated price: ' + price + ' RUB');
-      });
+    // Function to update price display
+    function updatePriceDisplay() {
+      const price = calculatePrice();
+      const priceEl = document.getElementById('calculated-price');
+      if (priceEl) {
+        priceEl.textContent = price + ' RUB';
+      }
     }
+
+    // Listen for changes on all country checkboxes
+    const allCountryIds = [
+      ...countryIds, ...meCountryIds, ...africaCountryIds, ...europeCountryIds,
+      ...caribbeanCountryIds, ...centralAmericaCountryIds, ...northAmericaCountryIds,
+      ...southAmericaCountryIds, ...oceaniaCountryIds
+    ];
+    allCountryIds.forEach(id => {
+      const cb = document.getElementById(id);
+      if (cb) {
+        cb.addEventListener('change', updatePriceDisplay);
+      }
+    });
+
+    // Listen for slider changes
+    const slider = document.getElementById('custom-range-slider');
+    if (slider) {
+      slider.addEventListener('input', updatePriceDisplay);
+    }
+
+    // Initial price display
+    updatePriceDisplay();
   });
   function calculatePrice() {
     // Collect all country IDs
