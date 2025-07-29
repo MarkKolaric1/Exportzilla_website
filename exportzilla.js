@@ -169,7 +169,7 @@
     }
   });
 })();
-  // Hide the selected-regions, selected-regions-me, selected-regions-africa, selected-regions-europe, selected-regions-caribbean, and selected-regions-central-america divs at the start
+  // Hide the selected-regions and all selected-categories-* at the start
   document.addEventListener('DOMContentLoaded', () => {
     // Hide all region tags/containers at the start
     const regionContainers = [
@@ -187,9 +187,21 @@
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
+    // Hide all selected-categories-* containers at the start
+    const automobileCategoryIds = [
+      'BMW', 'Audi', 'Mercedes'
+    ];
+    const categoryContainers = [
+      'selected-categories-automobile',
+      // Add more category containers here as needed
+    ];
+    categoryContainers.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
   });
   // Asia countries
-  const countryIds = [
+  const asiaCountryIds = [
     'Afghanistan', 'Armenia', 'Azerbaijan', 'Bangladesh', 'Bhutan', 'Brunei', 'Cambodia', 'China', 'Georgia', 'India', 'Indonesia', 'Japan', 'Kazakhstan', 'Kyrgyzstan', 'Laos', 'Malaysia', 'Maldives', 'Mongolia', 'Myanmar', 'Nepal', 'North-Korea', 'Pakistan', 'Philippines', 'Singapore', 'South-Korea', 'Sri-Lanka', 'Taiwan', 'Tajikistan', 'Thailand', 'Timor-Leste', 'Turkmenistan', 'Uzbekistan', 'Vietnam'
   ];
   // Middle-East countries
@@ -247,7 +259,7 @@
 
     // Listen for changes on all country checkboxes
     const allCountryIds = [
-      ...countryIds, ...meCountryIds, ...africaCountryIds, ...europeCountryIds,
+      ...asiaCountryIds, ...meCountryIds, ...africaCountryIds, ...europeCountryIds,
       ...caribbeanCountryIds, ...centralAmericaCountryIds, ...northAmericaCountryIds,
       ...southAmericaCountryIds, ...oceaniaCountryIds
     ];
@@ -267,25 +279,15 @@
     // Initial price display
     updatePriceDisplay();
   });
-  function calculatePrice() {
-    // Collect all country IDs
-    const allCountryIds = [
-      ...countryIds, ...meCountryIds, ...africaCountryIds, ...europeCountryIds,
-      ...caribbeanCountryIds, ...centralAmericaCountryIds, ...northAmericaCountryIds,
-      ...southAmericaCountryIds, ...oceaniaCountryIds
-    ];
-    // Count checked countries
-    const countriesChecked = allCountryIds.filter(id => {
-      const cb = document.getElementById(id);
-      return cb && cb.checked;
-    }).length;
-    // Get slider value
-    const slider = document.getElementById('custom-range-slider');
-    const sliderValue = slider ? parseInt(slider.value, 10) : 1000;
-    // Formula: only countries and slider
-    const price = (countriesChecked * 2) * (sliderValue / 1000);
-    return Math.max(1, Math.round(price));
-  }
+function calculatePrice() {
+  // Get slider value (number of rows)
+  const slider = document.getElementById('custom-range-slider');
+  const rows = slider ? parseInt(slider.value, 10) : 1000;
+  const minimumFee = 1000;
+  const perRowPrice = 10;
+  const total = Math.max(minimumFee, rows * perRowPrice);
+  return total;
+}
 
   // Optional: Helper to get checked country/category names (for order details)
   function getCheckedCountries() {
@@ -306,15 +308,39 @@
   document.addEventListener('change', event => {
     const el = event.target;
 
+    // 0. Category checkbox toggled? (any category)
+    const automobileCategoryIds = [
+      'BMW', 'Audi', 'Mercedes'
+    ];
+    // If a child category (BMW, Audi, Mercedes) is toggled, show/hide the Automobile container
+    if (automobileCategoryIds.includes(el.id)) {
+      const container = document.getElementById('selected-categories-automobile');
+      if (!container) return;
+      const anyChecked = automobileCategoryIds.some(cid => {
+        const cb = document.getElementById(cid);
+        return cb && cb.checked;
+      });
+      container.style.display = anyChecked ? 'flex' : 'none';
+      updateCategoriesTotal();
+    }
+    // --- Category Total Update Function ---
+    function updateCategoriesTotal() {
+      let total = 0;
+      const container = document.getElementById('selected-categories-automobile');
+      if (container && container.style.display !== 'none') total++;
+      // Add more containers as needed for other categories
+      const categoriesTotal = document.getElementById('Categories-total');
+      if (categoriesTotal) categoriesTotal.textContent = total;
+    }
 
     // 1. Country checkbox toggled? (Asia)
-    if (countryIds.includes(el.id)) {
+    if (asiaCountryIds.includes(el.id)) {
       updateAsiaTag();
       const parent = document.getElementById('Asia');
       if (el.checked) {
         if (parent) parent.checked = true;
       } else {
-        const anyChecked = countryIds.some(cid => {
+        const anyChecked = asiaCountryIds.some(cid => {
           const cb = document.getElementById(cid);
           return cb && cb.checked;
         });
@@ -436,7 +462,7 @@
 
     // 2. Asia parent toggled?
     if (el.id === 'Asia') {
-      countryIds.forEach(cid => {
+      asiaCountryIds.forEach(cid => {
         const cb = document.getElementById(cid);
         if (cb) cb.checked = el.checked;
       });
@@ -543,14 +569,14 @@
     }
 
     // If any country is checked, Asia is checked; if all are unchecked, Asia is unchecked
-    if (countryIds.includes(el.id)) {
+    if (asiaCountryIds.includes(el.id)) {
       const asia = document.getElementById('Asia');
       if (!asia) return;
       if (el.checked) {
         asia.checked = true;
       // [DEBUG] Asia checked set to true removed
       } else {
-        const anyChecked = countryIds.some(cid => {
+        const anyChecked = asiaCountryIds.some(cid => {
           const cb = document.getElementById(cid);
           return cb && cb.checked;
         });
@@ -580,7 +606,7 @@
     }
 
     function updateAsiaTag() {
-      const count = countryIds.filter(cid => {
+      const count = asiaCountryIds.filter(cid => {
         const cb = document.getElementById(cid);
         return cb && cb.checked;
       }).length;
@@ -589,11 +615,11 @@
       const container = document.getElementById('selected-regions-asia');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'Asia';
+        // mainTag.textContent = 'Asia'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
@@ -613,12 +639,12 @@
         return;
       }
       if (count > 0) {
-        mainTag.textContent = 'Middle-East';
+        // mainTag.textContent = 'Middle-East'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
         // [DEBUG] main-tag-me set to Middle-East, sub-tag-me set to ...
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
         // [DEBUG] main-tag-me and sub-tag-me cleared and selected-regions-me hidden
@@ -636,11 +662,11 @@
       const container = document.getElementById('selected-regions-africa');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'Africa';
+        // mainTag.textContent = 'Africa'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
@@ -657,11 +683,11 @@
       const container = document.getElementById('selected-regions-europe');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'Europe';
+        // mainTag.textContent = 'Europe'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
@@ -678,11 +704,11 @@
       const container = document.getElementById('selected-regions-caribbean');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'Caribbean';
+        // mainTag.textContent = 'Caribbean'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
@@ -699,11 +725,11 @@
       const container = document.getElementById('selected-regions-central-america');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'Central America';
+        // mainTag.textContent = 'Central America'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
@@ -720,11 +746,11 @@
       const container = document.getElementById('selected-regions-north-america');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'North America';
+        // mainTag.textContent = 'North America'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
@@ -741,11 +767,11 @@
       const container = document.getElementById('selected-regions-south-america');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'South America';
+        // mainTag.textContent = 'South America'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
@@ -762,11 +788,11 @@
       const container = document.getElementById('selected-regions-oceania');
       if (!mainTag || !subTag || !container) return;
       if (count > 0) {
-        mainTag.textContent = 'Oceania';
+        // mainTag.textContent = 'Oceania'; // No longer set dynamically
         subTag.textContent = count;
         container.style.display = 'flex';
       } else {
-        mainTag.textContent = '';
+        // mainTag.textContent = '';
         subTag.textContent = '';
         container.style.display = 'none';
       }
