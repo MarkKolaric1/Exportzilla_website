@@ -122,10 +122,10 @@
       // Create input[type=range]
       const slider = document.createElement('input');
       slider.type = 'range';
-      slider.min = '1000';
-      slider.max = '8000';
-      slider.step = '100';
-      slider.value = '2000';
+      slider.min = '250';
+      //slider.max = '';
+      slider.step = '25';
+      slider.value = '1000';
       slider.id = 'custom-range-slider';
       slider.style.width = '100%';
 
@@ -282,10 +282,12 @@
 function calculatePrice() {
   // Get slider value (number of rows)
   const slider = document.getElementById('custom-range-slider');
-  const rows = slider ? parseInt(slider.value, 10) : 1000;
-  const minimumFee = 1000;
-  const perRowPrice = 10;
-  const total = Math.max(minimumFee, rows * perRowPrice);
+  const rows = slider ? parseInt(slider.value, 10) : 250;
+  const minimumRows = 250;
+  const minimumFee = 3000;
+  const perRowPrice = 5;
+  const extraRows = Math.max(0, rows - minimumRows);
+  const total = minimumFee + extraRows * perRowPrice;
   return total;
 }
 
