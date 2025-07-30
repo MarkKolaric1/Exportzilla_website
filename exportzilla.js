@@ -123,7 +123,7 @@
       const slider = document.createElement('input');
       slider.type = 'range';
       slider.min = '250';
-      slider.max = '250000'; // Set a reasonable max value for the slider
+      slider.max = '2500'; // Set a reasonable max value for the slider
       slider.step = '25';
       slider.value = '1000';
       slider.id = 'custom-range-slider';
@@ -141,8 +141,8 @@
       maxInput.value = slider.value;
       maxInput.style.position = 'absolute';
       maxInput.style.right = '0';
-      //maxInput.style.top = '-28px';
-      maxInput.style.bottom = '28px'
+      maxInput.style.top = '-28px';
+      //maxInput.style.bottom = '28px'
       maxInput.style.color = '#131b23';
       maxInput.style.fontSize = '14px';
       maxInput.style.fontWeight = '500';
