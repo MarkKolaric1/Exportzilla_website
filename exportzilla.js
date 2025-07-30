@@ -123,7 +123,7 @@
       const slider = document.createElement('input');
       slider.type = 'range';
       slider.min = '250';
-      //slider.max = '';
+      slider.max = '250000'; // Set a reasonable max value for the slider
       slider.step = '25';
       slider.value = '1000';
       slider.id = 'custom-range-slider';
@@ -134,12 +134,30 @@
       valueLabel.id = 'range-slider-value';
       valueLabel.textContent = slider.value;
 
-      // Create label to show value/max above right
-      const maxLabel = document.createElement('span');
-      maxLabel.id = 'range-slider-max-label';
-      maxLabel.textContent = slider.value + '/' + slider.max;
+      // Create input to show and set value above right
+      const maxInput = document.createElement('input');
+      maxInput.id = 'range-slider-max-label';
+      maxInput.type = 'text';
+      maxInput.value = slider.value;
+      maxInput.style.position = 'absolute';
+      maxInput.style.right = '0';
+      //maxInput.style.top = '-28px';
+      maxInput.style.bottom = '28px'
+      maxInput.style.color = '#131b23';
+      maxInput.style.fontSize = '14px';
+      maxInput.style.fontWeight = '500';
+      maxInput.style.fontStyle = 'normal';
+      maxInput.style.lineHeight = '150%';
+      maxInput.style.background = '#fff';
+      maxInput.style.padding = '2px 8px';
+      maxInput.style.borderRadius = '6px';
+      maxInput.style.zIndex = '4';
+      maxInput.style.pointerEvents = 'auto';
+      maxInput.style.width = '70px';
+      maxInput.style.textAlign = 'right';
+      maxInput.style.border = '1px solid #ccc';
       sliderDiv.style.position = 'relative';
-      sliderDiv.appendChild(maxLabel);
+      sliderDiv.appendChild(maxInput);
 
       // Add slider and value label to the div
       sliderDiv.appendChild(slider);
@@ -159,13 +177,23 @@
         valueLabel.textContent = slider.value;
         // Set CSS variable for track color
         slider.style.setProperty('--slider-percent', (percent * 100) + '%');
-        // Update max label
-        maxLabel.textContent = slider.value + '/' + slider.max;
+        // Update max input
+        maxInput.value = slider.value;
       }
       // Initial position
       updateLabelAndTrack();
-      // Update on input
+      // Update on slider input
       slider.addEventListener('input', updateLabelAndTrack);
+      // Update slider when maxInput changes
+      maxInput.addEventListener('change', function() {
+        let v = parseInt(maxInput.value.replace(/\D/g, ''), 10);
+        if (isNaN(v)) v = parseInt(slider.min, 10);
+        v = Math.max(parseInt(slider.min, 10), Math.min(parseInt(slider.max, 10), v));
+        slider.value = v;
+        updateLabelAndTrack();
+        // Optionally, trigger any other slider listeners
+        slider.dispatchEvent(new Event('input'));
+      });
     }
   });
 })();
