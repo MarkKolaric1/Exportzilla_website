@@ -311,12 +311,11 @@ function calculatePrice() {
   // Get slider value (number of rows)
   const slider = document.getElementById('custom-range-slider');
   const rows = slider ? parseInt(slider.value, 10) : 250;
-  const minimumRows = 250;
-  const minimumFee = 3000;
-  const perRowPrice = 5;
-  const extraRows = Math.max(0, rows - minimumRows);
-  const total = minimumFee + (extraRows * perRowPrice);
-  return total;
+  const minRows = 250;
+  const minPrice = 3000;
+  const extraPricePerRow = 5;
+  if (rows <= minRows) return minPrice;
+  return minPrice + (rows - minRows) * extraPricePerRow;
 }
 
   // Optional: Helper to get checked country/category names (for order details)
@@ -855,18 +854,34 @@ function calculatePrice() {
   });
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Cookie banner logic
   var banner = document.getElementById('cookie-banner');
   var acceptBtn = document.getElementById('cookie-accept');
-  if (!banner || !acceptBtn) return;
-  // Check if user already accepted
-  if (localStorage.getItem('cookieAccepted') === 'true') {
-    banner.style.display = 'none';
-    return;
+  if (banner && acceptBtn) {
+    if (localStorage.getItem('cookieAccepted') === 'true') {
+      banner.style.display = 'none';
+    } else {
+      acceptBtn.addEventListener('click', function() {
+        try {
+          localStorage.setItem('cookieAccepted', 'true');
+        } catch (e) {}
+        banner.style.display = 'none';
+      });
+    }
   }
-  acceptBtn.addEventListener('click', function() {
-    try {
-      localStorage.setItem('cookieAccepted', 'true');
-    } catch (e) {}
-    banner.style.display = 'none';
-  });
+
+  // Modal open/close logic
+  var openBtn = document.getElementById('individual-base-btn');
+  var closeBtn = document.getElementById('close-popup');
+  var modal = document.getElementById('contact-popup');
+  if (openBtn && modal) {
+    openBtn.addEventListener('click', function() {
+      modal.style.display = 'block';
+    });
+  }
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+  }
 });
