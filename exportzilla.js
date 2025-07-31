@@ -123,7 +123,7 @@
       const slider = document.createElement('input');
       slider.type = 'range';
       slider.min = '250';
-      slider.max = '2500'; // Set a reasonable max value for the slider
+      slider.max = '25000'; // Set a reasonable max value for the slider
       slider.step = '25';
       slider.value = '1000';
       slider.id = 'custom-range-slider';
@@ -315,7 +315,7 @@ function calculatePrice() {
   const minimumFee = 3000;
   const perRowPrice = 5;
   const extraRows = Math.max(0, rows - minimumRows);
-  const total = minimumFee + extraRows * perRowPrice;
+  const total = minimumFee + (extraRows * perRowPrice);
   return total;
 }
 
@@ -854,19 +854,19 @@ function calculatePrice() {
     }
   });
 
-  (function() {
-    const banner = document.getElementById('cookie-banner');
-    const acceptBtn = document.getElementById('cookie-accept');
-
-    // Check if user already accepted
-    if (localStorage.getItem('cookieAccepted') === 'true') {
-      banner.style.display = 'none';
-      return;
-    }
-
-    // When user clicks Accept
-    acceptBtn.addEventListener('click', () => {
+document.addEventListener('DOMContentLoaded', function() {
+  var banner = document.getElementById('cookie-banner');
+  var acceptBtn = document.getElementById('cookie-accept');
+  if (!banner || !acceptBtn) return;
+  // Check if user already accepted
+  if (localStorage.getItem('cookieAccepted') === 'true') {
+    banner.style.display = 'none';
+    return;
+  }
+  acceptBtn.addEventListener('click', function() {
+    try {
       localStorage.setItem('cookieAccepted', 'true');
-      banner.style.display = 'none';
-    });
-  })();
+    } catch (e) {}
+    banner.style.display = 'none';
+  });
+});
