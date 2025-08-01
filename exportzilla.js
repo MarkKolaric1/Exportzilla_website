@@ -122,10 +122,10 @@
       // Create input[type=range]
       const slider = document.createElement('input');
       slider.type = 'range';
-      slider.min = '250';
-      slider.max = '25000'; // Set a reasonable max value for the slider
+      slider.min = '1';
+      slider.max = '20000'; // Set a reasonable max value for the slider
       slider.step = '25';
-      slider.value = '1000';
+      slider.value = '250';
       slider.id = 'custom-range-slider';
       slider.style.width = '100%';
 
@@ -489,77 +489,54 @@ function calculatePrice() {
       }
     }
 
-    // 2. Asia parent toggled?
-    if (el.id === 'Asia') {
-      asiaCountryIds.forEach(cid => {
+    // 2. Continent parent toggled?
+    const continentIds = [
+      'Asia', 'Middle-East', 'Africa', 'Europe', 'Caribbean', 'Central-America', 'North-America', 'South-America', 'Oceania'
+    ];
+    if (continentIds.includes(el.id)) {
+      // Check/uncheck all children as before
+      let countryList = [];
+      switch (el.id) {
+        case 'Asia': countryList = asiaCountryIds; break;
+        case 'Middle-East': countryList = meCountryIds; break;
+        case 'Africa': countryList = africaCountryIds; break;
+        case 'Europe': countryList = europeCountryIds; break;
+        case 'Caribbean': countryList = caribbeanCountryIds; break;
+        case 'Central-America': countryList = centralAmericaCountryIds; break;
+        case 'North-America': countryList = northAmericaCountryIds; break;
+        case 'South-America': countryList = southAmericaCountryIds; break;
+        case 'Oceania': countryList = oceaniaCountryIds; break;
+      }
+      countryList.forEach(cid => {
         const cb = document.getElementById(cid);
         if (cb) cb.checked = el.checked;
       });
-      updateAsiaTag();
-    }
-    // 2b. Middle-East parent toggled?
-    if (el.id === 'Middle-East') {
-      meCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateMeTag();
-    }
-    // 2c. Africa parent toggled?
-    if (el.id === 'Africa') {
-      africaCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateAfricaTag();
-    }
-    // 2d. Europe parent toggled?
-    if (el.id === 'Europe') {
-      europeCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateEuropeTag();
-    }
-    // 2e. Caribbean parent toggled?
-    if (el.id === 'Caribbean') {
-      caribbeanCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateCaribbeanTag();
-    }
-    // 2f. Central America parent toggled?
-    if (el.id === 'Central-America') {
-      centralAmericaCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateCentralAmericaTag();
-    }
-    // 2g. North America parent toggled?
-    if (el.id === 'North-America') {
-      northAmericaCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateNorthAmericaTag();
-    }
-    // 2h. South America parent toggled?
-    if (el.id === 'South-America') {
-      southAmericaCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateSouthAmericaTag();
-    }
-    // 2i. Oceania parent toggled?
-    if (el.id === 'Oceania') {
-      oceaniaCountryIds.forEach(cid => {
-        const cb = document.getElementById(cid);
-        if (cb) cb.checked = el.checked;
-      });
-      updateOceaniaTag();
+      // Update tags
+      switch (el.id) {
+        case 'Asia': updateAsiaTag(); break;
+        case 'Middle-East': updateMeTag(); break;
+        case 'Africa': updateAfricaTag(); break;
+        case 'Europe': updateEuropeTag(); break;
+        case 'Caribbean': updateCaribbeanTag(); break;
+        case 'Central-America': updateCentralAmericaTag(); break;
+        case 'North-America': updateNorthAmericaTag(); break;
+        case 'South-America': updateSouthAmericaTag(); break;
+        case 'Oceania': updateOceaniaTag(); break;
+      }
+      // --- Regions-all logic ---
+      const regionsAll = document.getElementById('Regions-all');
+      if (regionsAll) {
+        if (el.checked) {
+          if (!regionsAll.checked) regionsAll.checked = true;
+        } else {
+          // If all continents are now unchecked, uncheck Regions-all
+          const anyContinentChecked = continentIds.some(cid => {
+            const cb = document.getElementById(cid);
+            return cb && cb.checked;
+          });
+          if (!anyContinentChecked && regionsAll.checked) regionsAll.checked = false;
+        }
+      }
     }
 
     // Optionally, keep the old logic for 'Asia' and countryIds for compatibility
