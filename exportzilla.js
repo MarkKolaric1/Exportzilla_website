@@ -564,6 +564,16 @@ function calculatePrice() {
             if (ccb && !ccb.checked) ccb.checked = true;
           });
         });
+        // Update tags after checking all
+        updateAsiaTag();
+        updateMeTag();
+        updateAfricaTag();
+        updateEuropeTag();
+        updateCaribbeanTag();
+        updateCentralAmericaTag();
+        updateNorthAmericaTag();
+        updateSouthAmericaTag();
+        updateOceaniaTag();
       } else {
         // Uncheck all continents and all their countries
         continentIds.forEach(cid => {
@@ -587,6 +597,16 @@ function calculatePrice() {
             if (ccb && ccb.checked) ccb.checked = false;
           });
         });
+        // Update tags after unchecking all
+        updateAsiaTag();
+        updateMeTag();
+        updateAfricaTag();
+        updateEuropeTag();
+        updateCaribbeanTag();
+        updateCentralAmericaTag();
+        updateNorthAmericaTag();
+        updateSouthAmericaTag();
+        updateOceaniaTag();
       }
     }
 
