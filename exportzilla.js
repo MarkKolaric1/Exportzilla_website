@@ -539,6 +539,23 @@ function calculatePrice() {
       }
     }
 
+    // 3. Regions-all toggled?
+    if (el.id === 'Regions-all') {
+      if (el.checked) {
+        // Check all continents
+        continentIds.forEach(cid => {
+          const cb = document.getElementById(cid);
+          if (cb && !cb.checked) cb.checked = true;
+        });
+      } else {
+        // Uncheck all continents
+        continentIds.forEach(cid => {
+          const cb = document.getElementById(cid);
+          if (cb && cb.checked) cb.checked = false;
+        });
+      }
+    }
+
     // Optionally, keep the old logic for 'Asia' and countryIds for compatibility
     if (el.id === 'Asia') {
       countryIds.forEach(cid => {
